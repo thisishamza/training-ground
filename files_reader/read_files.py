@@ -1,7 +1,6 @@
 import csv
 import glob
 import os
-
 from datetime import datetime
 
 class Reader:
@@ -13,16 +12,13 @@ class Reader:
         refactored_weather_reading = {}
         for key, value in weather_reading.items():
             if value:
-                if value and '.' not in value:
-                    refactored_weather_reading[key] = int(value)
-                else:
-                    refactored_weather_reading[key] = float(value)
+                refactored_weather_reading[key] = int(value) if value and '.' not in value else float(value)
             else:
                 return None
         return refactored_weather_reading
 
 
-    def read_data(self):
+    def read_weather_data(self):
         """Reads data files and populates a nested dictionary to store data
 
         Args:
@@ -38,13 +34,15 @@ class Reader:
                             date = datetime.strptime(str(single_day_weather_reading['PKT']), "%Y-%m-%d")
                         else:
                             date = datetime.strptime(str(single_day_weather_reading['PKST']), "%Y-%m-%d")
-                        weather_reading = {required_key:single_day_weather_reading[required_key]
-                                    for required_key in required_keys if required_key in single_day_weather_reading}
+                        weather_reading = {required_key: single_day_weather_reading[required_key]
+                                           for required_key in required_keys if required_key in single_day_weather_reading}
                         
                         refactored_weather_reading = self.ignore_empty_values(weather_reading)
                         if refactored_weather_reading is not None:
                             refactored_weather_reading['date'] = date
-                            self.weather_readings.setdefault(date.year, {}).setdefault(date.month, []).append(refactored_weather_reading)
+                            self.weather_readings.setdefault(date.year, {}).setdefault(
+                                date.month, []).append(refactored_weather_reading)
+                            
         return self.weather_readings
 
 
