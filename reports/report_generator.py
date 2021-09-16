@@ -19,9 +19,10 @@ class ReportGenerator:
         yearly_maximum_reading = maximum_temperature[year]
         yearly_minimum_reading = minimum_temperature[year]
         
-        return {
-            'yearly_maximum_temperature': yearly_maximum_reading[month],
-            'yearly_minimum_temperature': yearly_minimum_reading[month]}
+        return  {
+                    'yearly_maximum_temperature': yearly_maximum_reading[month],
+                    'yearly_minimum_temperature': yearly_minimum_reading[month]
+                }
     
     
     def bar_charts_for_temperature(self, weather_readings):
@@ -52,5 +53,5 @@ class ReportGenerator:
         min_temperature = weather_readings['yearly_minimum_temperature']
         max_temperature = weather_readings['yearly_maximum_temperature']
         for day, weather_reading in enumerate(weather_readings['yearly_maximum_temperature']):
-            print(day+1, CBLUE + "+"*int(min_temperature[day]) + CRED + "+"*int(max_temperature[day]) + CWHITE, 
-                min_temperature[day], "-", max_temperature[day])
+            print(day+1, CBLUE + "+"*int(min_temperature[day]) + CRED + "+"*int(max_temperature[day]) + CWHITE,
+                  min_temperature[day], "-", max_temperature[day])
