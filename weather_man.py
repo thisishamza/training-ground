@@ -57,20 +57,20 @@ class Driver:
         arguments = vars(parsed_arguments)
         if arguments['e']:
             files_reader.compile_list_of_files(arguments['e'], arguments['path'])
-            complete_weather_data = files_reader.read_data()
+            complete_weather_data = files_reader.read_weather_data()
             yearly_weather_readings = calculate_temperature.compile_data_for_yearly_calculations(complete_weather_data)
             calculate_temperature.highest_lowest_temperature(yearly_weather_readings, arguments['e'])
             
         if arguments['a']:
             files_reader.compile_list_of_files(arguments['a'], arguments['path'])
-            complete_weather_data = files_reader.read_data()
+            complete_weather_data = files_reader.read_weather_data()
             monthly_weather_readings = calculate_temperature.compile_data_for_monthly_calculations(complete_weather_data)
             calculate_temperature.average_highest_lowest_temperature(
                 monthly_weather_readings, arguments['a'])
             
         if arguments['c']:
             files_reader.compile_list_of_files(arguments['c'], arguments['path'])
-            complete_weather_data = files_reader.read_data()
+            complete_weather_data = files_reader.read_weather_data()
             monthly_report_readings = generate_report.compile_data_for_monthly_reports(arguments['c'], complete_weather_data)
             generate_report.bar_charts_for_temperature(monthly_report_readings)
             generate_report.single_bar_chart_temperature(monthly_report_readings)
