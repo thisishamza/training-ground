@@ -12,18 +12,22 @@ class TemperatureCalculator:
             
             for month_name, month_values in year_values.items():
                 minimum_temperature.append(
-                    min(month_values, key=lambda x: int(x['Min TemperatureC'])))
+                    min(month_values, key=lambda x: x['Min TemperatureC']))
                 minimum_temperature_every_month[year_number] = minimum_temperature
+                
                 maximum_temperature.append(
-                    max(month_values, key=lambda x: int(x['Max TemperatureC'])))
+                    max(month_values, key=lambda x: x['Max TemperatureC']))
                 maximum_temperature_every_month[year_number] = maximum_temperature
+                
                 maximum_humidity.append(
-                    max(month_values, key=lambda x: int(x[' Mean Humidity'])))
+                    max(month_values, key=lambda x: x[' Mean Humidity']))
                 maximum_humidity_every_month[year_number] = maximum_humidity
                 
-        return {'minimum_temperature_every_month': minimum_temperature_every_month, 
-                'maximum_temperature_every_month': maximum_temperature_every_month, 
-                'maximum_humidity_every_month': maximum_humidity_every_month}
+        return  {
+                    'minimum_temperature_every_month': minimum_temperature_every_month, 
+                    'maximum_temperature_every_month': maximum_temperature_every_month, 
+                    'maximum_humidity_every_month': maximum_humidity_every_month
+                }
 
 
     def compile_data_for_monthly_calculations(self, weather_readings):
@@ -34,45 +38,43 @@ class TemperatureCalculator:
         for key_year, year in weather_readings.items():
             for month_name, month_values in year.items():
                 
-                avg_maximum_temperature_every_month.setdefault(
-                    key_year, {}).setdefault(month_name, float(
-                        sum(map(int, (daily_readings['Max TemperatureC'] for daily_readings in month_values 
-                                      if daily_readings['Max TemperatureC'] != '')))) / len(month_values))
-                avg_minimum_temperature_every_month.setdefault(
-                    key_year, {}).setdefault(month_name, float(
-                        sum(map(int, (daily_readings['Min TemperatureC'] for daily_readings in month_values 
-                                      if daily_readings['Min TemperatureC'] != '')))) / len(month_values))
-                avg_mean_humidity_every_month.setdefault(
-                    key_year, {}).setdefault(month_name, float(
-                        sum(map(int, (daily_readings[' Mean Humidity'] for daily_readings in month_values 
-                                      if daily_readings[' Mean Humidity'] != '')))) / len(month_values))
-                    
-        return {'avg_maximum_temperature_every_month': avg_maximum_temperature_every_month, 
-                'avg_minimum_temperature_every_month': avg_minimum_temperature_every_month, 
-                'avg_mean_humidity_every_month': avg_mean_humidity_every_month}
+                avg_maximum_temperature_every_month.setdefault(key_year, {}).setdefault(month_name, float(
+                    sum(daily_readings['Max TemperatureC'] for daily_readings in month_values
+                        if daily_readings['Max TemperatureC'] != '') // len(month_values)))
+                
+                avg_minimum_temperature_every_month.setdefault(key_year, {}).setdefault(month_name, float(
+                    sum(daily_readings['Min TemperatureC'] for daily_readings in month_values
+                        if daily_readings['Min TemperatureC'] != '') // len(month_values)))
+                
+                avg_mean_humidity_every_month.setdefault(key_year, {}).setdefault(month_name, float(
+                    sum(daily_readings[' Mean Humidity'] for daily_readings in month_values
+                        if daily_readings[' Mean Humidity'] != '') // len(month_values)))
+
+        return  {
+                    'avg_maximum_temperature_every_month': avg_maximum_temperature_every_month, 
+                    'avg_minimum_temperature_every_month': avg_minimum_temperature_every_month, 
+                    'avg_mean_humidity_every_month': avg_mean_humidity_every_month
+                }
 
 
     def get_maximum_humidity_yearly(self, maximum_humidity_every_month):
         yearly_values = {}
         for key_date, monthwise_readings in maximum_humidity_every_month.items():
-            yearly_values[key_date] = max(
-                monthwise_readings, key=lambda x: x['Max Humidity'])
+            yearly_values[key_date] = max(monthwise_readings, key=lambda x: x['Max Humidity'])
         return yearly_values
 
 
     def get_maximum_temperature_yearly(self, maximum_temperature_every_month):
         yearly_values = {}
         for key_date, monthwise_readings in maximum_temperature_every_month.items():
-            yearly_values[key_date] = max(
-                monthwise_readings, key=lambda x: x['Max TemperatureC'])
+            yearly_values[key_date] = max(monthwise_readings, key=lambda x: x['Max TemperatureC'])
         return yearly_values
 
 
     def get_minimum_temperature_yearly(self, minimum_temperature_every_month):
         yearly_values = {}
         for key_date, monthwise_readings in minimum_temperature_every_month.items():
-            yearly_values[key_date] = min(
-                monthwise_readings, key=lambda x: x['Min TemperatureC'])
+            yearly_values[key_date] = min(monthwise_readings, key=lambda x: x['Min TemperatureC'])
         return yearly_values
 
 
@@ -86,9 +88,11 @@ class TemperatureCalculator:
         minimum_temperature_yearly = self.get_minimum_temperature_yearly(
             yearly_weather_readings['minimum_temperature_every_month'])[int(year)]
         minimum_temperature_date = minimum_temperature_yearly['date'].strftime("%d %b")
+        
         maximum_temperature_yearly = self.get_maximum_temperature_yearly(
             yearly_weather_readings['maximum_temperature_every_month'])[int(year)]
         maximum_temperature_date = maximum_temperature_yearly['date'].strftime("%d %b")
+        
         maximum_humidity_yearly = self.get_maximum_humidity_yearly(
             yearly_weather_readings['maximum_humidity_every_month'])[int(year)]
         maximum_humidity_date = maximum_humidity_yearly['date'].strftime("%d %b")
