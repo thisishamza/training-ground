@@ -10,38 +10,56 @@ class Reader:
 
     def ignore_empty_values(self, weather_reading):
         refactored_weather_reading = {}
+        
         for key, value in weather_reading.items():
             if value:
                 refactored_weather_reading[key] = int(value) if value and '.' not in value else float(value)
             else:
                 return None
+            
         return refactored_weather_reading
 
 
     def read_weather_data(self):
-        """Reads data files and populates a nested dictionary to store data
-
-        Args:
-            path_to_files ([String]): [path to directory containing data files]
-        """
-        required_keys = ['Max TemperatureC', 'Mean TemperatureC', 'Min TemperatureC', 'Max Humidity', ' Mean Humidity', ' Min Humidity']
+        required_keys = [
+            'Max TemperatureC', 
+            'Mean TemperatureC', 
+            'Min TemperatureC', 
+            'Max Humidity', 
+            ' Mean Humidity', 
+            ' Min Humidity'
+        ]
+        
         for file_name in self.list_of_files:
             with open(file_name, mode='r') as csv_file:
                 for single_day_weather_reading in csv.DictReader(csv_file):
-                    if single_day_weather_reading:
+                    if not single_day_weather_reading:
+                        continue
                         
-                        if single_day_weather_reading.get('PKT'):
-                            date = datetime.strptime(str(single_day_weather_reading['PKT']), "%Y-%m-%d")
-                        else:
-                            date = datetime.strptime(str(single_day_weather_reading['PKST']), "%Y-%m-%d")
-                        weather_reading = {required_key: single_day_weather_reading[required_key]
-                                           for required_key in required_keys if required_key in single_day_weather_reading}
+                    if single_day_weather_reading.get('PKT'):
+                        date = datetime.strptime(
+                            str(single_day_weather_reading['PKT']), "%Y-%m-%d"
+                        )
+                    else:
+                        date = datetime.strptime(
+                            str(single_day_weather_reading['PKST']), "%Y-%m-%d"
+                        )
                         
-                        refactored_weather_reading = self.ignore_empty_values(weather_reading)
-                        if refactored_weather_reading is not None:
-                            refactored_weather_reading['date'] = date
-                            self.weather_readings.setdefault(date.year, {}).setdefault(
-                                date.month, []).append(refactored_weather_reading)
+                    weather_reading = {
+                        required_key: single_day_weather_reading[required_key] 
+                        for required_key in required_keys 
+                        if required_key in single_day_weather_reading
+                    }
+                    
+                    refactored_weather_reading = self.ignore_empty_values(weather_reading)
+                    
+                    if refactored_weather_reading is None:
+                        continue
+                    
+                    refactored_weather_reading['date'] = date
+                    self.weather_readings.setdefault(date.year, {}).setdefault(
+                        date.month, []).append(refactored_weather_reading
+                    )
                             
         return self.weather_readings
 

@@ -6,21 +6,27 @@ class ReportGenerator:
         
         for key_year, year in weather_readings.items():
             for key_month, month in year.items():
-                maximum_temperature.setdefault(
-                    key_year, {}).setdefault(key_month, [daily_readings['Max TemperatureC'] for daily_readings in month])
-                minimum_temperature.setdefault(
-                    key_year, {}).setdefault(key_month, [daily_readings['Min TemperatureC'] for daily_readings in month])
+                
+                maximum_temperature.setdefault(key_year, {}).setdefault(
+                    key_month, [daily_readings['Max TemperatureC'] 
+                    for daily_readings in month]
+                )
+                minimum_temperature.setdefault(key_year, {}).setdefault(
+                    key_month, [daily_readings['Min TemperatureC'] 
+                    for daily_readings in month]
+                )
                     
         date = date.split('/')
         year = int(date[0])
         month = int(date[1])
+        
         yearly_maximum_reading = maximum_temperature[year]
         yearly_minimum_reading = minimum_temperature[year]
         
-        return  {
-                    'yearly_maximum_temperature': yearly_maximum_reading[month],
-                    'yearly_minimum_temperature': yearly_minimum_reading[month]
-                }
+        return {
+            'yearly_maximum_temperature': yearly_maximum_reading[month],
+            'yearly_minimum_temperature': yearly_minimum_reading[month]
+        }
     
     
     def bar_charts_for_temperature(self, weather_readings):
@@ -32,8 +38,10 @@ class ReportGenerator:
         CRED = '\33[31m'
         CBLUE = '\33[34m'
         CWHITE = '\33[37m'
+        
         min_temperature = weather_readings['yearly_minimum_temperature']
         max_temperature = weather_readings['yearly_maximum_temperature']
+        
         for day, weather_reading in enumerate(weather_readings['yearly_maximum_temperature']):
             print(f"{day+1} {CRED}", '+' * int(max_temperature[day]), f"{CWHITE} {max_temperature[day]}C")
             print(f"{day+1} {CBLUE}", '+' * int(min_temperature[day]), f"{CWHITE} {min_temperature[day]}C")
@@ -48,8 +56,14 @@ class ReportGenerator:
         CRED = '\33[31m'
         CBLUE = '\33[34m'
         CWHITE = '\33[37m'
+        
         min_temperature = weather_readings['yearly_minimum_temperature']
         max_temperature = weather_readings['yearly_maximum_temperature']
+        
         for day, weather_reading in enumerate(weather_readings['yearly_maximum_temperature']):
-            print(day+1, CBLUE + "+"*int(min_temperature[day]) + CRED + "+"*int(max_temperature[day]) + CWHITE,
-                  min_temperature[day], "-", max_temperature[day])
+            print(
+                day+1, 
+                CBLUE + "+"*int(min_temperature[day]) 
+                + CRED + "+"*int(max_temperature[day]) 
+                + CWHITE, min_temperature[day], "-", max_temperature[day]
+            )
