@@ -7,11 +7,9 @@ class ReportGenerator:
         for key_year, year in weather_readings.items():
             for key_month, month in year.items():
                 maximum_temperature.setdefault(
-                    key_year, {}).setdefault(
-                        key_month, [daily_readings['Max TemperatureC'] for daily_readings in month])
+                    key_year, {}).setdefault(key_month, [daily_readings['Max TemperatureC'] for daily_readings in month])
                 minimum_temperature.setdefault(
-                    key_year, {}).setdefault(
-                        key_month, [daily_readings['Min TemperatureC'] for daily_readings in month])
+                    key_year, {}).setdefault(key_month, [daily_readings['Min TemperatureC'] for daily_readings in month])
                     
         date = date.split('/')
         year = int(date[0])
